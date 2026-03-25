@@ -21,7 +21,8 @@ jobs:
         id: compare
         run: |
           latest_commit=$(git ls-remote https://github.com/canonical/maas-ui HEAD | awk '{print $1}')
-          current_commit=$(git rev-parse HEAD:src/maasui/src)
+          #current_commit=$(git rev-parse HEAD:src/maasui/src)
+          current_commit='06f4c8bdd81a856702473f2a31fcba81dc73e395'
 
           if [[ "$latest_commit" == "$current_commit" ]]; then
             echo "has_update=false" >> "$GITHUB_OUTPUT"
@@ -43,7 +44,7 @@ jobs:
         with:
           submodules: recursive
           fetch-depth: 0
-          token: ${{ secrets.LANDER_GH_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup LXD
         uses: canonical/setup-lxd@v1
