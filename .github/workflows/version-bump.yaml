@@ -44,7 +44,7 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt update
-          suto apt install -y devscripts
+          sudo apt install -y devscripts
 
       - name: Bump Version and Push
         run: |
