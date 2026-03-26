@@ -42,7 +42,9 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Install dependencies
-        run: sudo apt-get install -y devscripts
+        run: |
+          sudo apt update
+          suto apt install -y devscripts
 
       - name: Bump Version and Push
         run: |
