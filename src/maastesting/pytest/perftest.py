@@ -62,6 +62,23 @@ def pytest_addoption(parser):
         default=["timing", "queries"],
         help="Performance features to enable.",
     )
+    parser.addoption(
+        "--commissioning-data-dir",
+        help=(
+            "Directory of commissioning output JSON files, one file per "
+            "machine, for perf tests that process commissioning data. When "
+            "given, those tests use the files instead of generated data and "
+            "seed one machine per file. Files are read in sorted filename "
+            "order."
+        ),
+    )
+
+
+@pytest.fixture(scope="session")
+def commissioning_data_dir(pytestconfig):
+    """Path passed to --commissioning-data-dir, or None if not given."""
+    value = pytestconfig.getoption("--commissioning-data-dir")
+    return Path(value) if value else None
 
 
 @pytest.fixture(scope="session")
@@ -239,7 +256,14 @@ class PerfTester:
         self.results = {"branch": git_branch, "commit": git_hash, "tests": {}}
 
     @contextmanager
-    def record(self, name):
+    def record(self, name, metadata=None):
+        """Measure the wrapped block and record it under `name`.
+
+        `metadata` is merged into the recorded results alongside the tracer
+        output. It is for describing what was measured, e.g. how many
+        payloads a test consumed and where they came from, so that two runs
+        can be compared knowingly. Keys must not collide with tracer keys.
+        """
         tracers = []
         # Collect all the garbage before tracers begin, so that collection of
         # unrelated garbage won't affect measurements.
@@ -258,7 +282,7 @@ class PerfTester:
 
         if self.outdir:
             self.outdir.mkdir(parents=True, exist_ok=True)
-        results = {}
+        results = dict(metadata) if metadata else {}
         for tracer in tracers:
             results.update(tracer.results())
             if self.outdir:
