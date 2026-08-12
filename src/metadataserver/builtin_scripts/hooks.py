@@ -1205,7 +1205,7 @@ def process_lxd_results(node, output, exit_status):
         _process_lxd_environment(node, data["environment"])
         _process_lxd_resources(node, data)
         _process_machine_extra(node, data.get("machine-extra", None))
-        _populate_hardware_profile(node.id, data)
+        # _populate_hardware_profile(node.id, data)
     except Exception as e:
         log_failure_event(str(e))
         raise

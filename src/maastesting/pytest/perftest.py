@@ -72,6 +72,11 @@ def pytest_addoption(parser):
             "committed."
         ),
     )
+    parser.addoption(
+        "--cpu-time-outfile",
+        type=Path,
+        help=("File for storing cpu time measurement"),
+    )
 
 
 @pytest.fixture(scope="session")
@@ -167,6 +172,9 @@ class QueryCounter(PerfTracer):
 
         from django.conf import settings
         from django.db import connection
+
+        with open("queries.json", "w") as f:
+            json.dump(connection.queries, f)
 
         self._count = len(connection.queries)
         self._time = float(
