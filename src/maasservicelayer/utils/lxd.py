@@ -57,22 +57,22 @@ class LXDCPUCore(_LXDModel):
 
 
 class LXDCPUSocket(_LXDModel):
-    name: str = "" # NEEDED
+    name: str = ""  # NEEDED
     vendor: str = ""
     socket: int = 0
     cache: list[LXDCPUCache] = Field(default_factory=list)
     cores: list[LXDCPUCore] = Field(default_factory=list)
-    frequency: int = 0 # NEEDED
+    frequency: int = 0  # NEEDED
     frequency_minimum: int = 0
-    frequency_turbo: int = 0 # NEEDED
+    frequency_turbo: int = 0  # NEEDED
 
 
 class LXDCPU(_LXDModel):
     """`ResourcesCPU` LXD API model."""
 
     architecture: str = ""
-    sockets: list[LXDCPUSocket] = Field(default_factory=list) # NEEDED
-    total: int = 0 # NEEDED
+    sockets: list[LXDCPUSocket] = Field(default_factory=list)  # NEEDED
+    total: int = 0  # NEEDED
 
 
 # Memory-related models.
@@ -94,7 +94,7 @@ class LXDMemory(_LXDModel):
     hugepages_used: int = 0
     hugepages_size: int = 0
     used: int = 0
-    total: int = 0 # NEEDED
+    total: int = 0  # NEEDED
 
 
 # GPU-related models.
@@ -102,28 +102,28 @@ class LXDMemory(_LXDModel):
 
 class LXDGPUCardSRIOV(_LXDModel):
     current_vfs: int = 0
-    maximum_vfs: int = 0 # NEEDED
+    maximum_vfs: int = 0  # NEEDED
     vfs: list[LXDGPUCard] | None = None
 
 
 class LXDGPUCard(_LXDModel):
     drm: dict | None = None
-    sriov: LXDGPUCardSRIOV | None = None # NEEDED
+    sriov: LXDGPUCardSRIOV | None = None  # NEEDED
     nvidia: dict | None = None
     mdev: dict | None = None
-    numa_node: int = 0 # NEEDED
-    pci_address: str = "" # NEEDED
+    numa_node: int = 0  # NEEDED
+    pci_address: str = ""  # NEEDED
     usb_address: str = ""
-    vendor: str = "" # NEEDED
-    vendor_id: str = "" # NEEDED
-    product: str = "" # NEEDED
-    product_id: str = "" # NEEDED
+    vendor: str = ""  # NEEDED
+    vendor_id: str = ""  # NEEDED
+    product: str = ""  # NEEDED
+    product_id: str = ""  # NEEDED
 
 
 class LXDGPU(_LXDModel):
     """ResourcesGpu LXD API model."""
 
-    cards: list[LXDGPUCard] = Field(default_factory=list)
+    cards: list[LXDGPUCard] = Field(default_factory=list)  # NEEDED
     total: int = 0
 
 
@@ -140,24 +140,24 @@ class LXDNetworkCardPortInfiniband(_LXDModel):
 
 
 class LXDNetworkCardPort(_LXDModel):
-    id: str = "" # NEEDED
-    address: str = "" # NEEDED
+    id: str = ""  # NEEDED
+    address: str = ""  # NEEDED
     port: int = 0
     protocol: str = ""
-    supported_modes: list[str] = Field(default_factory=list) # NEEDED
+    supported_modes: list[str] = Field(default_factory=list)  # NEEDED
     supported_ports: list[str] = Field(default_factory=list)
     port_type: str = ""
     transceiver_type: str = ""
     auto_negotiation: bool = False
     link_detected: bool = False
-    link_speed: int = 0 # NEEDED
+    link_speed: int = 0  # NEEDED
     link_duplex: str = ""
     infiniband: LXDNetworkCardPortInfiniband | None = None
 
 
 class LXDNetworkCardSRIOV(_LXDModel):
     current_vfs: int = 0
-    maximum_vfs: int = 0 # NEEDED
+    maximum_vfs: int = 0  # NEEDED
     vfs: list[LXDNetworkCard] | None = None
 
 
@@ -170,14 +170,14 @@ class LXDNetworkCard(_LXDModel):
     driver: str = ""
     driver_version: str = ""
     ports: list[LXDNetworkCardPort] = Field(default_factory=list)
-    sriov: LXDNetworkCardSRIOV | None = None # NEEDED
+    sriov: LXDNetworkCardSRIOV | None = None  # NEEDED
     vdpa: LXDNetworkCardVDPA | None = None
-    numa_node: int = 0 # NEEDED
+    numa_node: int = 0  # NEEDED
     pci_address: str = ""
-    vendor: str = ""
-    vendor_id: str = ""
-    product: str = ""
-    product_id: str = ""
+    vendor: str = ""  # NEEDED
+    vendor_id: str = ""  # NEEDED
+    product: str = ""  # NEEDED
+    product_id: str = ""  # NEEDED
     firmware_version: str | None = Field(default="")
     usb_address: str = ""
 
@@ -185,7 +185,7 @@ class LXDNetworkCard(_LXDModel):
 class LXDNetwork(_LXDModel):
     """`ResourcesNetwork` LXD API model."""
 
-    cards: list[LXDNetworkCard] = Field(default_factory=list) # NEEDED
+    cards: list[LXDNetworkCard] = Field(default_factory=list)  # NEEDED
     total: int = 0
 
 
@@ -203,22 +203,22 @@ class LXDStorageDiskPartition(_LXDModel):
 
 
 class LXDStorageDisk(_LXDModel):
-    id: str = "" # NEEDED
+    id: str = ""  # NEEDED
     device: str = ""
-    model: str = "" # NEEDED
-    type: str = "" # NEEDED
-    read_only: bool = False # NEEDED
+    model: str = ""  # NEEDED
+    type: str = ""  # NEEDED
+    read_only: bool = False  # NEEDED
     mounted: bool = False
-    size: int = 0 # NEEDED
+    size: int = 0  # NEEDED
     removable: bool = False
     wwn: str = ""
-    numa_node: int = 0 # NEEDED
-    device_path: str = "" # NEEDED
-    block_size: int = 0 # NEEDED
-    firmware_version: str = "" # NEEDED
+    numa_node: int = 0  # NEEDED
+    device_path: str = ""  # NEEDED
+    block_size: int = 0  # NEEDED
+    firmware_version: str = ""  # NEEDED
     rpm: int = 0
-    serial: str = "" # NEEDED
-    device_id: str = "" # NEEDED
+    serial: str = ""  # NEEDED
+    device_id: str = ""  # NEEDED
     partitions: list[LXDStorageDiskPartition] = Field(default_factory=list)
     pci_address: str = ""
     usb_address: str = ""
@@ -229,7 +229,7 @@ class LXDStorageDisk(_LXDModel):
 class LXDStorage(_LXDModel):
     """`ResourcesStorage` LXD API model."""
 
-    disks: list[LXDStorageDisk] = Field(default_factory=list)
+    disks: list[LXDStorageDisk] = Field(default_factory=list)  # NEEDED
     total: int = 0
 
 
@@ -320,8 +320,8 @@ class LXDSystem(_LXDModel):
     """`ResourcesSystem` LXD API model."""
 
     uuid: str = ""
-    vendor: str = ""
-    product: str = ""
+    vendor: str = ""  # NEEDED
+    product: str = ""  # NEEDED
     family: str = ""
     version: str = ""
     sku: str = ""
@@ -335,14 +335,14 @@ class LXDSystem(_LXDModel):
 class LXDResources(_LXDModel):
     """Top-level `Resources` LXD API model."""
 
-    cpu: LXDCPU = Field(default_factory=LXDCPU)
-    memory: LXDMemory = Field(default_factory=LXDMemory)
-    gpu: LXDGPU = Field(default_factory=LXDGPU)
-    network: LXDNetwork = Field(default_factory=LXDNetwork)
-    storage: LXDStorage = Field(default_factory=LXDStorage)
+    cpu: LXDCPU = Field(default_factory=LXDCPU)  # NEEDED
+    memory: LXDMemory = Field(default_factory=LXDMemory)  # NEEDED
+    gpu: LXDGPU = Field(default_factory=LXDGPU)  # NEEDED
+    network: LXDNetwork = Field(default_factory=LXDNetwork)  # NEEDED
+    storage: LXDStorage = Field(default_factory=LXDStorage)  # NEEDED
     usb: LXDUSB = Field(default_factory=LXDUSB)
     pci: LXDPCI = Field(default_factory=LXDPCI)
-    system: LXDSystem = Field(default_factory=LXDSystem)
+    system: LXDSystem = Field(default_factory=LXDSystem)  # NEEDED
 
 
 # NetworkState models (map of interface name -> LXDNetworkState)
@@ -409,7 +409,7 @@ class LXDNetworkState(_LXDModel):
 
 class LXDServerEnvironment(_LXDModel):
     kernel: str = ""
-    kernel_architecture: str = "" # NEEDED
+    kernel_architecture: str = ""  # NEEDED
     kernel_version: str = ""
     os_name: str = ""
     os_version: str = ""
@@ -421,20 +421,20 @@ class LXDServerEnvironment(_LXDModel):
 class LXDMachineExtra(_LXDModel):
     """MAAS-specific machine metadata injected during commissioning."""
 
-    platform: str = "" # NEEDED
+    platform: str = ""  # NEEDED
 
 
 class MachineResources(_LXDModel):
     """Full output of the ``50-maas-01-commissioning`` script."""
 
-    api_version: str = "" # NEEDED
-    api_extensions: list[str] = Field(default_factory=list) # NEEDED
-    environment: LXDServerEnvironment = Field( # NEEDED
+    api_version: str = ""
+    api_extensions: list[str] = Field(default_factory=list)
+    environment: LXDServerEnvironment = Field(  # NEEDED
         default_factory=LXDServerEnvironment
     )
-    resources: LXDResources = Field(default_factory=LXDResources)
+    resources: LXDResources = Field(default_factory=LXDResources)  # NEEDED
     networks: dict[str, LXDNetworkState] = Field(default_factory=dict)
-    machine_extra: LXDMachineExtra | None = Field( # NEEDED
+    machine_extra: LXDMachineExtra | None = Field(  # NEEDED
         default=None, alias="machine-extra"
     )
     storage_extra: dict | None = Field(default=None, alias="storage-extra")

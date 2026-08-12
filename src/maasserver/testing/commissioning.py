@@ -30,15 +30,6 @@ class LXDDisk:
     removable: bool = False
     rpm: int = 0
     numa_node: int = 0
-    device: str = ""
-    model: str = ""
-    wwn: str = ""
-    device_path: str = ""
-    block_size: int = 512
-    firmware_version: str = ""
-    serial: str = ""
-    device_id: str = ""
-    used_by: str = ""
 
 
 @dataclasses.dataclass
@@ -148,18 +139,6 @@ class LXDUSBDevice:
 
 
 @dataclasses.dataclass
-class LXDGPUCard:
-    pci_address: str
-    vendor: str = "NVIDIA Corporation"
-    vendor_id: str = "10de"
-    product: str = "GA100 [A100 SXM4 80GB]"
-    product_id: str = "20b2"
-    driver: str = "nvidia"
-    driver_version: str = "535.104.05"
-    numa_node: int = 0
-
-
-@dataclasses.dataclass
 class LXDSystem:
     family: str = ""
 
@@ -184,16 +163,9 @@ class FakeCommissioningData:
         api_version="1.0",
         server_name=None,
         kernel_architecture="x86_64",
-        sockets=1,
-        socket_name=None,
-        numa_nodes=1,
     ):
         self.cores = cores
         self.memory = memory
-        self.numa_nodes = numa_nodes
-        self.sockets = sockets
-        self.socket_name = socket_name
-        self._gpu_cards = []
         if api_extensions is None:
             api_extensions = [
                 "resources",
@@ -237,24 +209,8 @@ class FakeCommissioningData:
             self.environment["kernel_architecture"]
         )
 
-    def add_disk(self, id: str, size: int, **kwargs):
-        self._disks.append(LXDDisk(id, size=size, **kwargs))
-
-    def add_gpu_card(self, pci_address=None, **kwargs):
-        if pci_address is None:
-            pci_address = self.allocate_pci_address()
-        card = LXDGPUCard(pci_address=pci_address, **kwargs)
-        self._gpu_cards.append(card)
-        self.create_pci_device(
-            card.pci_address,
-            card.vendor_id,
-            card.vendor,
-            card.product_id,
-            card.product,
-            card.driver,
-            card.driver_version,
-        )
-        return card
+    def add_disk(self, id: str, size: int):
+        self._disks.append(LXDDisk(id, size=size))
 
     def allocate_pci_address(self):
         prev_address = (
@@ -514,18 +470,6 @@ class FakeCommissioningData:
             "total": len(self._usb_devices),
         }
 
-        gpu_resources = {
-            "cards": [dataclasses.asdict(card) for card in self._gpu_cards],
-            "total": len(self._gpu_cards),
-        }
-        cpu_sockets = [
-            {
-                "socket": index,
-                "cores": [],
-                **({"name": self.socket_name} if self.socket_name else {}),
-            }
-            for index in range(max(self.sockets, 1))
-        ]
         old_interfaces_data = self._generate_interfaces()
         data = {
             "api_extensions": self.api_extensions,
@@ -534,7 +478,12 @@ class FakeCommissioningData:
             "resources": {
                 "cpu": {
                     "architecture": self.environment["kernel_architecture"],
-                    "sockets": cpu_sockets,
+                    "sockets": [
+                        {
+                            "socket": 0,
+                            "cores": [],
+                        }
+                    ],
                     "total": self.cores,
                 },
                 "memory": {
@@ -543,29 +492,8 @@ class FakeCommissioningData:
                     "hugepages_size": 0,
                     "used": int(0.3 * self.memory * 1024 * 1024),
                     "total": int(self.memory * 1024 * 1024),
-                    "nodes": [
-                        {
-                            "numa_node": index,
-                            "hugepages_used": 0,
-                            "hugepages_total": 0,
-                            "used": int(
-                                0.3
-                                * self.memory
-                                * 1024
-                                * 1024
-                                / max(self.numa_nodes, 1)
-                            ),
-                            "total": int(
-                                self.memory
-                                * 1024
-                                * 1024
-                                / max(self.numa_nodes, 1)
-                            ),
-                        }
-                        for index in range(max(self.numa_nodes, 1))
-                    ],
                 },
-                "gpu": gpu_resources,
+                "gpu": {"cards": [], "total": 0},
                 "network": network_resources,
                 "storage": storage_resources,
                 "usb": usb_resources,
@@ -575,8 +503,7 @@ class FakeCommissioningData:
             "networks": networks,
         }
         for core_index in range(self.cores):
-            socket = cpu_sockets[core_index % len(cpu_sockets)]
-            socket["cores"].append(
+            data["resources"]["cpu"]["sockets"][0]["cores"].append(
                 {
                     "core": core_index,
                     "threads": [
@@ -584,7 +511,7 @@ class FakeCommissioningData:
                             "id": core_index,
                             "thread": 0,
                             "online": True,
-                            "numa_node": core_index % max(self.numa_nodes, 1),
+                            "numa_node": 0,
                         },
                     ],
                     "frequency": 1500,
