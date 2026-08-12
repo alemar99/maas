@@ -39,8 +39,6 @@ PROFILE_ITERATIONS = 500
 
 def bench(fn, repeats=REPEATS):
     """Return (median_us, p90_us) over `repeats` calls."""
-    for _ in range(50):
-        fn()
     samples = []
     for _ in range(repeats):
         start = time.perf_counter()
